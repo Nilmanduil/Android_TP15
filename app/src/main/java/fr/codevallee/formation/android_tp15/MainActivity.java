@@ -1,5 +1,6 @@
 package fr.codevallee.formation.android_tp15;
 
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import java.util.concurrent.Exchanger;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity {
@@ -97,21 +97,62 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpProgress() {
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
         if(progressBar.getProgress() == 100) {
+            /*
             progressThread.interrupt();
             try {
                 progressThread.join();
             } catch (Exception e) {
                 e.printStackTrace();
-            }
+            } //*/
             isThreadRunning.set(false);
         }
 
+        progressBar.setProgress(0);
+        //*
         if(isThreadRunning.get()) {
-            progressBar.setProgress(0);
+            
         } else {
             isThreadRunning.set(true);
-            progressThread.start();
+            // progressThread.start();
+            ProgressAsyncTask progressTask = new ProgressAsyncTask();
+            progressTask.execute();
+        } //*/
+    }
+
+    private class ProgressAsyncTask extends AsyncTask<Void, Integer, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+            int i = progressBar.getProgress();
+            while (i < 101) {
+                if (isCancelled())
+                    break;
+
+                try {
+                    Thread.sleep (100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                publishProgress(i);
+                i = progressBar.getProgress();
+                if (i == 100) {
+                    break;
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            Integer progress = values[0];
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+            progressBar.incrementProgressBy(1);
+            Log.d("Info", "Progress bar : " + progress + "%");
         }
     }
 }
