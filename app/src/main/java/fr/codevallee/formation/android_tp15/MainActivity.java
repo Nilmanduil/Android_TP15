@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import java.util.concurrent.Exchanger;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,7 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
             if(isThreadRunning.get()) {
                 int progress = msg.getData().getInt("PROGRESS");
-                progressBar.setProgress(progress);
+                // progressBar.setProgress(progress);
+                progressBar.incrementProgressBy(1);
             }
         }
     };
@@ -30,9 +32,12 @@ public class MainActivity extends AppCompatActivity {
     private Thread progressThread = new Thread(new Runnable() {
         @Override
         public void run() {
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
             if (isThreadRunning.get()) {
                 try {
-                    for (int i = 0; i <= 100; i++) {
+                    int i = progressBar.getProgress();
+                    while (i <= 100){
                         if(isThreadPausing.get()) {
                             Thread.sleep(1000);
                         } else {
@@ -41,17 +46,17 @@ public class MainActivity extends AppCompatActivity {
                             messageBundle.putInt("PROGRESS", i);
                             message.setData(messageBundle);
                             handler.sendMessage(message);
+
+                            i = progressBar.getProgress();
                             Log.d("Info", "Progress : " + i + "%");
                             try {
-                                Thread.sleep(200);
+                                Thread.sleep(100);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                        }
 
-                        if (i == 100) {
-                            Thread.currentThread().interrupt();
-                            break;
+                            if (i == 100)
+                                break;
                         }
                     }
                 } catch (Throwable t) {
@@ -94,10 +99,17 @@ public class MainActivity extends AppCompatActivity {
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         if(progressBar.getProgress() == 100) {
             progressThread.interrupt();
+            try {
+                progressThread.join();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             isThreadRunning.set(false);
         }
 
-        if(!isThreadRunning.get()) {
+        if(isThreadRunning.get()) {
+            progressBar.setProgress(0);
+        } else {
             isThreadRunning.set(true);
             progressThread.start();
         }
