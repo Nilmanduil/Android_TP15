@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Progress Bar</string>
     <string name="go">Go !</string>
+    <string name="toast">Lancement de la progress bar !</string>
 </resources>

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -75,6 +76,14 @@ public class MainActivity extends AppCompatActivity {
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast toast = Toast.makeText(MainActivity.this, R.string.toast, Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                });
+
                 setUpProgress();
             }
         });
@@ -112,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setProgress(0);
         //*
         if(isThreadRunning.get()) {
-            
+
         } else {
             isThreadRunning.set(true);
             // progressThread.start();
