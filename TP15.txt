@@ -1,0 +1,34 @@
+# Le but de ce TP 15 est de charger des données depuis internet sans bloquer l'application. 
+# 3 heures
+
+# Vous pouvez utiliser le Layout de votre choix.
+
+1 - Création d'une activité.
+
+2 - Ajouter à votre activité une ProgressBar et une bouton 'Go !'
+
+3 - Au clic sur le bouton, mettre en place une boucle qui annime la progressBar (incrémentation de 1 toutes les 300 millisecondes)
+
+4 - Vérifier le programme.  
+
+# Sortir la mise à jour de la progressBar du thread IU
+
+5 - Utiliser le cours pour utiliser un Thread et le pattern Handler 
+
+Aide : https://openclassrooms.com/courses/creez-des-applications-pour-android/le-travail-en-arriere-plan
+
+6 - Afin d'éviter les fuites mémoires, ajouter et utiliser dans votre programme les booleans suivants : 
+
+    private AtomicBoolean isRunning = new AtomicBoolean(false);
+    private AtomicBoolean isPausing = new AtomicBoolean(false);
+
+Aide : http://mathias-seguy.developpez.com/tutoriels/android/comprendre-thread-handler-asynctask-fuites-memoires/#L5-1
+
+7 Mise en place du pattern AsyncTask 
+
+# Simuler un long téléchargement sur internet.
+
+Aide : http://supertos.free.fr/supertos.php?page=1249
+
+8 - Utiliser la méthode runOnUiThread (pour mettre à jour un Label par exemple). 
+Puis regarder le code source de cette méthode.
